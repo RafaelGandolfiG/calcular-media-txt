@@ -62,9 +62,9 @@ class Aluno:
             self.notas[materia.nome] = []
         self.notas[materia.nome].append(nota)
         if len(self.notas[materia.nome]) > 3:
-            self.remover_nota(materia)
+            self.remover_excedido(materia)
 
-    def remover_nota(self, materia):
+    def remover_excedido(self, materia):
         print(f"Limite de 3 notas excedido em {materia.nome}")
         print(f"Notas atuais: {self.notas[materia.nome]}")
         while len(self.notas[materia.nome]) > 3:
@@ -74,6 +74,11 @@ class Aluno:
                 print("Nota removida com sucesso!")
             else:
                 print("Essa nota não existe!")
+
+    def remover_nota(self, materia, nota):
+        for n in self.notas[materia.nome]:
+            if n == nota:
+                self.notas[materia.nome].remove(nota)
 
     def media_por_materia(self, materia):
         if materia.nome not in self.notas:
@@ -119,7 +124,7 @@ def remover():
     turmas[turma].remover_aluno(id, nome)
 
 
-def adicionar_nota():
+def verificar_dados():
     turma = input("De qual turma é o aluno? ")
     if turma not in turmas:
         print("Não tem essa turma")
@@ -136,6 +141,14 @@ def adicionar_nota():
         print("Essa materia nao existe")
         return
     materia = materias[materia]
+    return turma, nome, id, materia
+
+
+def adicionar_nota():
+    dados = verificar_dados()
+    if dados is None:
+        return
+    turma, nome, id, materia = dados
     for i in turmas[turma].alunos:
         if i.id == id and i.nome.strip().lower() == nome.strip().lower():
             nota = input(f"Digite a nota de {materia.nome}: ")
@@ -145,6 +158,33 @@ def adicionar_nota():
                 print("Digite apenas numeros")
                 return
             i.adicionar_nota(materia, nota)
+            break
+    else:
+        print("Aluno não encontrado")
+
+
+def remover_nota():
+    dados = verificar_dados()
+    if dados is None:
+        return
+    turma, nome, id, materia = dados
+    for i in turmas[turma].alunos:
+        if i.id == id and i.nome.strip().lower() == nome.strip().lower():
+            print(f"Notas de {materia.nome} disponiveis")
+            for num, j in enumerate(i.notas[materia.nome]):
+                print(f"Nota {num}: {j}")
+            nota = input("Qual nota deseja remover? ")
+            try:
+                nota = float(nota)
+            except:
+                print("Digite apenas numeros")
+                return
+            for n in i.notas[materia.nome]:
+                if nota == n:
+                    i.remover_nota(materia, nota)
+                    break
+            else:
+                print("nota não encontrada")
             break
     else:
         print("Aluno não encontrado")
