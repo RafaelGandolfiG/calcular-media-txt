@@ -36,6 +36,7 @@ class Materia:
     def __init__(self, nome, professor):
         self.nome = nome
         self.professor = professor
+
     def mostrar_infos(self):
         print(f"{'Nome':<15} | {'Professor':<15}")
         print(f"{self.nome:<15} | {self.professor:<15}")
@@ -57,7 +58,7 @@ class Aluno:
     def adicionar_nota(self, materia, nota):
         if materia not in self.materias:
             self.matricular(materia)
-        if materia not in self.notas:
+        if materia.nome not in self.notas:
             self.notas[materia.nome] = []
         self.notas[materia.nome].append(nota)
         if len(self.notas[materia.nome]) > 3:
@@ -84,13 +85,12 @@ class Aluno:
 
     def media_geral(self):
         medias_por_disciplina = []
-        for i in self.disciplinas:
+        for i in self.materias:
             media = self.media_por_materia(i)
             medias_por_disciplina.append(media)
         if not medias_por_disciplina:
             return 0.0
         return sum(medias_por_disciplina) / len(medias_por_disciplina)
-
 
 
 def matricular():
