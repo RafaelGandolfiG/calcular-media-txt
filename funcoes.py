@@ -118,6 +118,9 @@ def adicionar_nota():
     for i in turmas[turma].alunos:
         if i.id == id and i.nome.strip().lower() == nome.strip().lower():
             nota = input(f"Digite a nota de {materia.nome}: ")
+            if nota > 10 or nota < 0:
+                print("Nota invalida")
+                return
             try:
                 nota = float(nota)
             except:
@@ -145,6 +148,9 @@ def remover_nota():
             nota = input("Qual nota deseja remover? ")
             try:
                 nota = float(nota)
+                if nota > 10 or nota < 0:
+                    print("Nota invalida")
+                    return
             except:
                 print("Digite apenas numeros")
                 return
