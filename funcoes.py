@@ -1,109 +1,6 @@
-import time
 import pandas
-
-
-class Turma:
-    def __init__(self, nome):
-        self.nome = nome
-        self.alunos = []
-        self.total = 0
-
-    def adicionar_aluno(self, aluno):
-        self.total += 1
-        aluno.id = self.total
-        self.alunos.append(aluno)
-
-    def remover_aluno(self, id, nome):
-        for i in self.alunos:
-            if i.id == id and i.nome.strip().lower() == nome.strip().lower():
-                self.alunos.remove(i)
-                print("Aluno removido")
-                break
-        else:
-            print("Não existe esse aluno")
-
-    def listar_alunos(self):
-        print(f"\nTurma: {self.nome}")
-        print("-" * 30)
-        print(f"{'ID':<5} | {'Nome':<20}")
-        print("-" * 30)
-        for aluno in self.alunos:
-            print(f"{aluno.id:<5} | {aluno.nome:<20}")
-        print("-" * 30)
-
-
-class Materia:
-    def __init__(self, nome, professor):
-        self.nome = nome
-        self.professor = professor
-
-    def mostrar_infos(self):
-        print(f"{'Nome':<15} | {'Professor':<15}")
-        print(f"{self.nome:<15} | {self.professor:<15}")
-
-
-class Aluno:
-    def __init__(self, nome):
-        self.nome = nome
-        self.id = None
-        self.materias = []
-        self.notas = {}
-
-    def matricular(self, materia):
-        if materia not in self.materias:
-            self.materias.append(materia)
-            return True
-        else:
-            print("Essa materia ja esta adicionada")
-            return False
-
-    def adicionar_nota(self, materia, nota):
-        if materia not in self.materias:
-            self.matricular(materia)
-        if materia.nome not in self.notas:
-            self.notas[materia.nome] = []
-        self.notas[materia.nome].append(nota)
-        if len(self.notas[materia.nome]) > 3:
-            self.remover_excedido(materia)
-
-    def remover_excedido(self, materia):
-        print(f"Limite de 3 notas excedido em {materia.nome}")
-        print(f"Notas atuais: {self.notas[materia.nome]}")
-        while len(self.notas[materia.nome]) > 3:
-            nota = input("Digite a nota que deseja remover: ")
-            try:
-                nota = float(nota)
-            except ValueError:
-                print("Digite apenas numeros")
-                continue
-            if nota in self.notas[materia.nome]:
-                self.notas[materia.nome].remove(nota)
-                print("Nota removida com sucesso!")
-            else:
-                print("Essa nota não existe!")
-
-    def remover_nota(self, materia, nota):
-        for n in self.notas[materia.nome]:
-            if n == nota:
-                self.notas[materia.nome].remove(nota)
-                break
-
-    def media_por_materia(self, materia):
-        if materia.nome not in self.notas:
-            return 0.0
-        notas = self.notas[materia.nome]
-        if not notas:
-            return 0.0
-        return sum(notas) / len(notas)
-
-    def media_geral(self):
-        medias_por_disciplina = []
-        for i in self.materias:
-            media = self.media_por_materia(i)
-            medias_por_disciplina.append(media)
-        if not medias_por_disciplina:
-            return 0.0
-        return sum(medias_por_disciplina) / len(medias_por_disciplina)
+from aluno import Aluno
+from dados import materias, turmas
 
 
 def carregar_txt():
@@ -276,27 +173,138 @@ def matricular_materia():
         print("Aluno não encontrado")
 
 
-materias = {
-    "dsa": Materia("Data Structures", "Erick"),
-    "cs": Materia("Computer Science", "Mauricio"),
-    "mlpam": Materia("Modelagem Linear", "Rodolfo"),
-    "mmc": Materia("Modelagem Matematica", "Roberto"),
-    "pcap": Materia("Python", "Russi"),
-}
+def area_turma():
+    print("Bem vindo à área das turma")
+    turma = input("Qual turma deseja consultar? ").strip().upper()
+    for i in turmas:
+        if i == turma:
+            menu_turma()
+            break
+    else:
+        print("Essa turma não existe")
+        return
 
-turmas = {
-    "1CCPH": Turma("1CCPH"),
-    "1CCPI": Turma("1CCPI"),
-    "1CCPJ": Turma("1CCPJ"),
-    "1CCPK": Turma("1CCPK"),
-    "1CCPL": Turma("1CCPL"),
-}
+
+def listar_alunos():
+    turma = input("Qual turma deseja consultar? ").strip().upper()
+    if turma not in turmas:
+        print("Turma não encontrada")
+        return
+    turmas[turma].listar_alunos()
+
+
+def mostrar_resumo():
+    turma = input("Qual turma deseja consultar? ").strip().upper()
+    if turma not in turmas:
+        print("Turma não encontrada")
+        return
+    turmas[turma].mostrar_resumo()
+
+
+def menu_turma():
+    while True:
+        print("[1] Listar alunos\n[2] Resumo da turma")
+        escolha = input("Escolha: ")
+        match escolha:
+            case "1":
+                listar_alunos()
+            case "2":
+                mostrar_resumo()
+            case "0":
+                print("Saindo da área das turmas")
+                return
+            case _:
+                print("Valor inválido")
+                continue
+
+
+def mostrar_medias(aluno):
+    dados = []
+    for materia in aluno.materias:
+        media = aluno.media_por_materia(materia)
+        if media >= 6:
+            situacao = "Aprovado"
+        elif media >= 4:
+            situacao = "Exame"
+        else:
+            situacao = "Reprovado"
+        dados.append(
+            {
+                "Matéria": materia.nome,
+                "Professor": materia.professor,
+                "Média": round(media, 2),
+                "Situação": situacao,
+            }
+        )
+    if not dados:
+        print("Aluno não possui matérias")
+        return
+    tabela = pandas.DataFrame(dados)
+    print(tabela.to_string(index=False))
+
+
+def mostrar_media_geral(aluno):
+    media = aluno.media_geral()
+    if media >= 6:
+        situacao = "Aprovado"
+    elif media >= 4:
+        situacao = "Exame"
+    else:
+        situacao = "Reprovado"
+    dados = [
+        {
+            "ID": aluno.id,
+            "Nome": aluno.nome,
+            "Média Geral": round(media, 2),
+            "Situação": situacao,
+        }
+    ]
+    tabela = pandas.DataFrame(dados)
+    print(tabela.to_string(index=False))
+
+
+def menu_aluno(aluno):
+    while True:
+        print("\n[1] Médias por matéria\n" "[2] Média geral e situação\n" "[0] Sair")
+        escolha = input("Escolha: ")
+        match escolha:
+            case "1":
+                mostrar_medias(aluno)
+            case "2":
+                mostrar_media_geral(aluno)
+            case "0":
+                print("Saindo da área do aluno")
+                return
+            case _:
+                print("Valor inválido")
+                continue
+
+
+def area_aluno():
+    print("Bem vindo à área dos alunos")
+    turma = input("Qual turma é o aluno? ").strip().upper()
+    if turma not in turmas:
+        print("Essa turma não existe")
+        return
+    nome = input("Nome do aluno: ").strip().lower()
+    try:
+        id = int(input("ID do aluno: "))
+    except ValueError:
+        print("Digite um ID válido")
+        return
+    for aluno in turmas[turma].alunos:
+        if aluno.id == id and aluno.nome.strip().lower() == nome:
+            print(f"Bem vindo, {aluno.nome}!")
+            menu_aluno(aluno)
+            break
+    else:
+        print("Aluno não encontrado")
 
 
 def menu():
     while True:
         print(
-            "[1] Adicionar aluno\n[2] remover aluno\n[3] adicionar nota\n[4] remover nota\n[5] matricular materia\n[6] salvar txt\n[0] Sair"
+            "[1] Adicionar aluno\n[2] remover aluno\n[3] adicionar nota\n[4] remover nota\n[5] matricular materia\n[6] salvar txt\n[7] Area da turma\n[8] Area do aluno\n[0] Sair"
         )
         escolha = input("Escolha: ")
         match escolha:
@@ -312,6 +320,10 @@ def menu():
                 matricular_materia()
             case "6":
                 salvar_txt()
+            case "7":
+                area_turma()
+            case "8":
+                area_aluno()
             case "0":
                 salvar_txt()
                 print("Saindo...")
@@ -321,5 +333,53 @@ def menu():
                 continue
 
 
-carregar_txt()
-menu()
+def criar():
+    while True:
+        print("Vamos criar sua conta")
+        try:
+            with open("logins.txt", "r", encoding="utf-8") as arquivo:
+                linhas = arquivo.readlines()
+        except FileNotFoundError:
+            print("Arquivo não existe")
+            linhas = []
+        email = input("Digite seu email: ")
+        senha = input("Digite sua senha: ")
+        confirma = input("Confirme sua senha: ")
+        if senha.strip() != confirma.strip():
+            print("Senhas não coincidem")
+            continue
+        for linha in linhas:
+            dados = linha.split(";")
+            if dados[0] == email:
+                print("Ja tem uma conta com esse email")
+                break
+        else:
+            with open("logins.txt", "a", encoding="utf-8") as arquivo:
+                arquivo.write(f"{email};{senha}\n")
+            print("Conta criada com sucesso")
+            menu()
+            return
+
+
+def logar():
+    while True:
+        print("Vamos entrar na sua conta")
+        try:
+            with open("logins.txt", "r", encoding="utf-8") as arquivo:
+                linhas = arquivo.readlines()
+            if len(linhas) == 0:
+                print("Nenhuma conta cadastrada")
+                return
+        except FileNotFoundError:
+            print("Nenhuma conta cadastrada")
+            return
+        email = input("Digite seu email: ")
+        senha = input("Digite sua senha: ")
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            if dados[0] == email and dados[1] == senha:
+                print("Login realizado com sucesso!")
+                menu()
+                return
+        else:
+            print("Email ou senha incorretos")

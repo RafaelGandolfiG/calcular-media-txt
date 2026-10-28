@@ -1,0 +1,25 @@
+
+1CCPI;1;Rafael;Python;Russi;8.0;9.0;10.0
+1CCPI;1;Rafael;Data Structures;Erick;7.0;8.0;9.0
+1CCPI;1;Rafael;Computer Science;Mauricio;6.0;7.0;8.0
+1CCPI;2;Carlos;Python;Russi;5.0;6.0;5.0
+1CCPI;2;Carlos;Modelagem Linear;Rodolfo;4.0;5.0;6.0
+1CCPI;3;Guilherme;Python;Russi;2.0;3.0;4.0
+1CCPI;3;Guilherme;Data Structures;Erick;3.0;4.0;2.0
+1CCPH;1;Pedro;Python;Russi;9.0;9.0;10.0
+1CCPH;1;Pedro;Modelagem Matematica;Roberto;8.0;9.0;8.0
+1CCPH;2;Joao;Python;Russi;5.0;5.0;5.0
+1CCPH;2;Joao;Computer Science;Mauricio;4.0;5.0;6.0
+1CCPJ;1;Lucas;Data Structures;Erick;3.0;2.0;4.0
+1CCPJ;1;Lucas;Python;Russi;2.0;3.0;3.0
+1CCPJ;2;Mariana;Python;Russi;10.0;9.0;10.0
+1CCPJ;2;Mariana;Modelagem Linear;Rodolfo;8.0;9.0;9.0
+1CCPK;1;Ana;Python;Russi;7.0;8.0;7.0
+1CCPK;1;Ana;Computer Science;Mauricio;8.0;8.0;9.0
+1CCPK;2;Bruno;Modelagem Matematica;Roberto;4.0;5.0;5.0
+1CCPK;2;Bruno;Data Structures;Erick;5.0;4.0;6.0
+1CCPL;1;Fernanda;Python;Russi;9.0;10.0;9.0
+1CCPL;1;Fernanda;Data Structures;Erick;8.0;9.0;10.0
+1CCPL;2;Mateus;Python;Russi;2.0;4.0;3.0
+1CCPL;2;Mateus;Computer Science;Mauricio;3.0;2.0;4.0
+1CCPL;3;Beatriz;;
