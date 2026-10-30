@@ -1,4 +1,4 @@
-import pandas
+import pandas as pd
 from aluno import Aluno
 from dados import materias, turmas
 
@@ -224,6 +224,47 @@ def menu_turma():
                 continue
 
 
+def mostrar_notas(aluno):
+    for turma in turmas:
+        for i in turmas[turma].alunos:
+            if i.id == aluno.id and i.nome.strip().lower() == aluno.nome.strip().lower():
+                break
+        else:
+            continue
+        break
+    else:
+        print("Aluno nao encontrado")
+        return
+    materia1 = input("Digite a sigla da materia: ").strip().lower()
+    if materia1 not in materias:
+        print("Essa materia nao existe")
+        return
+    materia = materias[materia1]
+    if materia not in aluno.materias:
+        print("Esse aluno nao tem essa materia cadastrada")
+        return
+    dados = {
+        "Turma": turma,
+        "Aluno": aluno.nome,
+        "Id": aluno.id,
+        "Materia": materia.nome,
+        "Notas": aluno.notas[materia.nome],
+    }
+    tabela = pd.DataFrame(dados)
+    media = {
+        "Turma": "-",
+        "Aluno": "-",
+        "Id": "-",
+        "Materia": "-",
+        "Notas": "-",
+    }
+    final = pd.Series(media, name="Media")
+    final = final.to_frame().T
+    final["Media"] = aluno.media_por_materia(materia)
+    tabela = pd.concat([tabela, final], ignore_index=True)
+    print(tabela.to_string(index=False))
+
+
 def mostrar_medias(aluno):
     dados = []
     for materia in aluno.materias:
@@ -245,7 +286,7 @@ def mostrar_medias(aluno):
     if not dados:
         print("Aluno não possui matérias")
         return
-    tabela = pandas.DataFrame(dados)
+    tabela = pd.DataFrame(dados)
     print(tabela.to_string(index=False))
 
 
@@ -265,19 +306,24 @@ def mostrar_media_geral(aluno):
             "Situação": situacao,
         }
     ]
-    tabela = pandas.DataFrame(dados)
+    tabela = pd.DataFrame(dados)
     print(tabela.to_string(index=False))
 
 
 def menu_aluno(aluno):
     while True:
-        print("\n[1] Médias por matéria\n" "[2] Média geral e situação\n" "[0] Sair")
+        print(
+            "\n[1] Médias por matéria\n"
+            "[2] Média geral e situação\n[3] Notas por materia\n[0] Sair"
+        )
         escolha = input("Escolha: ")
         match escolha:
             case "1":
                 mostrar_medias(aluno)
             case "2":
                 mostrar_media_geral(aluno)
+            case "3":
+                mostrar_notas(aluno)
             case "0":
                 print("Saindo da área do aluno")
                 return
