@@ -118,11 +118,11 @@ def adicionar_nota():
     for i in turmas[turma].alunos:
         if i.id == id and i.nome.strip().lower() == nome.strip().lower():
             nota = input(f"Digite a nota de {materia.nome}: ")
-            if nota > 10 or nota < 0:
-                print("Nota invalida")
-                return
             try:
                 nota = float(nota)
+                if nota > 10 or nota < 0:
+                    print("Nota invalida")
+                    return
             except:
                 print("Digite apenas numeros")
                 return
@@ -242,6 +242,12 @@ def mostrar_notas(aluno):
     materia = materias[materia1]
     if materia not in aluno.materias:
         print("Esse aluno nao tem essa materia cadastrada")
+        return
+    if materia.nome not in aluno.notas:
+        print("O aluno não possui notas nessa matéria")
+        return
+    if not aluno.notas[materia.nome]:
+        print("O aluno ainda não recebeu notas nessa matéria")
         return
     dados = {
         "Turma": turma,
