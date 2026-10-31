@@ -43,6 +43,8 @@ class Aluno:
             if n == nota:
                 self.notas[materia.nome].remove(nota)
                 break
+        else:
+            print("nota nao encontrada")
 
     def media_por_materia(self, materia):
         if materia.nome not in self.notas:
